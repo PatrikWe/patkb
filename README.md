@@ -1,5 +1,18 @@
 # patkb
 
+This repo is the result of my first custom keyboard build.
+The keyboard is a split keyboard inspired by the [SofleKeyboard](https://github.com/josefadamcik/SofleKeyboard) without the top row.
+At the time of the build I did not feel comfortable with the idea of designing and ordering a pcb for this keyboard.
+I opted for handwiring the keyboard, but I wanted to keep the option of hotswapping the Kailh Choc V2 Low Profile Switches.
+I ended up 3D-printing a holder plate for the hotswap sockets which I handwired to the [nice!nano v2](https://nicekeyboards.com/nice-nano/).
+The keyboard is programmed with the ZMK firmware and a custom shield.
+
+This repo is holding the 3D-files, a list of components and the shield
+
+![patkb keyboard](images/patkb.jpeg)
+
+## What it is
+
 A [ZMK](https://zmk.dev) module for **patkb**, a custom split mechanical keyboard.
 
 This repo contains only the shield definition (hardware description, keymap,
