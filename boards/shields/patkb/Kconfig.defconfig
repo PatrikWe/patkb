@@ -1,0 +1,19 @@
+if SHIELD_PATKB_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "patkb"
+
+config BT_DEVICE_NAME
+    default "patkb"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_PATKB_LEFT || SHIELD_PATKB_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif

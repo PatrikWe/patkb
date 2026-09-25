@@ -1,0 +1,13 @@
+file_format: "1"
+id: patkb
+name: patkb
+type: shield
+#url: https://github.com/josefadamcik/SofleKeyboard
+requires: [pro_micro]
+exposes: []
+features:
+  - keys
+  #- studio
+siblings:
+  - patkb_left
+  - patkb_right
