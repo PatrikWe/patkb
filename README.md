@@ -34,44 +34,24 @@ for the exact per-key layout), which drives the quantities below.
 | Kailh Choc hotswap sockets | 44 | 22 per half; the standard "Kailh Choc" PCB/hotswap footprint — Choc V2 switch pins are backward-compatible with it |
 | Small-signal switching diodes (e.g. 1N4148) | 44 | 22 per half, one per switch, through-hole (DO-35), matches `diode-direction = "col2row"` in the shield |
 | Low-profile keycaps for Kailh Choc | 44 | 22 per half |
-| 3.7V LiPo battery, JST-PH 2.0 connector | 1–2 | One per half if run independently, or a single battery + power switch on the central (left) half only — nice!nano v2 has a JST-PH battery connector and built-in charge circuit |
+| 3.7V LiPo battery, JST-PH 2.0 connector | 2 | One per half — nice!nano v2 has a built-in charge circuit |
 | SPDT slide switch (power on/off) | 1–2 | Optional, one per battery; matches the small switch visible next to the reset button in the wiring photos |
-| Hookup wire, ~28-30 AWG, 2+ colors | a few meters | Solid-core is easiest to route/hold shape for the row/column matrix bus wires and diode-to-diode jumps; use one color per row and another per column to keep the matrix readable while soldering (as in the [wiring photos](#wiring)) |
-| Rosin-core solder + soldering iron | — | Fine-tip iron recommended for the hotswap sockets and diode legs |
+| Hookup wire, ~28-30 AWG, 2+ colors | a few meters | Solid-core is easiest to route/hold shape for the row/column matrix bus wires and diode-to-diode jumps, to route the rows and columns to the nice!nano a flexible wire is needed (as in the [wiring photos](#wiring)) |
 | Heat-shrink tubing or electrical tape | — | Insulate diode legs / wire crossings inside the case |
-| M2/M3 screws + heat-set inserts (or superglue) | as needed | To close the case halves — depends on how `Case_Left.stl` / `Case_Right.stl` were designed for assembly |
+| M2 screws and spacer | as needed (recommend 8 per side to prevent bending of the plate) | To close the case halves |
 
-## Wiring
+### Wiring
 
 patkb is hand-wired (no PCB): each half is a `col2row` diode matrix soldered
 onto the 3D-printed hotswap-socket plate and wired to a nice!nano v2.
 
-![Hand-wired matrix on the hotswap plate](images/patkb_open_2.jpg)
 ![Matrix wiring close-up, controller-side corner](images/patkb_open_3.jpg)
 
 **Diode direction — `col2row`:** every switch has one diode in series, wired
 so current flows from the column wire, through the diode, into the row wire.
-Concretely: the diode's cathode (the banded end) connects to the **row**
-side of the switch, and its anode connects to the **column** wire that daisy
-chains through that column (visible as the red diode-leg jumpers in the
-photos above; the yellow wires are the row wires, one per row, run across
-the columns).
+The topplate has a slot to fit the diodes in to hold them in place.
 
-**Physical key → matrix position** (row/col indices as used by
-`RC(row, col)` in `patkb.dtsi`; unlabeled cells don't exist — rows 0/1 only
-populate columns 0-4 and 7-11):
-
-| Row \ Col | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **0** | Q | W | E | R | T | – | – | Z | U | I | O | P |
-| **1** | A | S | D | F | G | – | – | H | J | K | L | Ö |
-| **2** | Y | X | C | V | B | MUTE | PP | N | M | , | . | - |
-| **3** | ESC | TAB | GUI | ALT | SPC | CTRL | BSPC | RET | L2 | RALT | ß | DEL |
-
-Columns 0-5 are the left half, columns 6-11 the right half (`patkb_right.overlay`
-sets `col-offset = <6>` on the shared transform). Labels are the default
-layer's legends (see [Layout](#layout) for the full keymap with all layers);
-`L2` is the momentary second-layer key and `PP` is play/pause.
+**Physical key → matrix position**: the positions are very intuitive. A column is formed by all switches directly below/above each other. A row is made up by all switches directly next to each other. Note: row 3 and 4 have one column more.
 
 **GPIO pin assignments** (from `patkb_left.overlay` / `patkb_right.overlay`;
 pin numbers are ZMK's [pro_micro pinout](https://zmk.dev/docs/development/hardware-integration/pro-micro-shield-connector)
@@ -97,15 +77,13 @@ source of truth.
 
 ## The software
 
-A [ZMK](https://zmk.dev) module for **patkb**, a custom split mechanical keyboard.
+The repo contains a [ZMK](https://zmk.dev) module for **patkb**.
+This is a shield based on the layout and wiring, desribing which gpio pins are used and how the switches are positioned.
+I also includes the keymap definition (`boards/shields/patkb/patkb.keymap`).
+(`config/west.yml`) and (`.github/workflows/build.yml`) are used to automatically build the files to flash the nice!nano with.
+ZMK or Zephyr itself are not included in this repo, those are pulled in at build time.
 
-This repo contains only the shield definition (hardware description, keymap,
-Kconfig) and the [`west`](https://docs.zephyrproject.org/latest/develop/west/index.html)
-manifest needed to build firmware for it — it does not vendor ZMK or Zephyr
-itself, those are pulled in at build time.
-
-
-## Keymap
+### Keymap
 
 The keymap (`boards/shields/patkb/patkb.keymap`) uses a German (`locale/keys_de.h`)
 layout and defines 4 layers:
@@ -126,7 +104,7 @@ Two custom hold-tap behaviors are defined:
 Both use `flavor = "balanced"` with a 280 ms tapping term and a 150 ms
 require-prior-idle, tuned to avoid misfires while typing fast.
 
-## Layout
+### Layout
 
 ![patkb keymap layout](keymap-drawer/patkb.svg)
 
@@ -148,9 +126,7 @@ string in `.github/workflows/draw-keymaps.yml` to match.
 German (`DE_*`) key codes and the custom `lt`/`mt` hold-tap behaviors are
 resolved into readable legends via `keymap_drawer.config.yaml`.
 
-## Building firmware
-
-### Via GitHub Actions (recommended)
+### Building firmware
 
 Push this repo to GitHub. `.github/workflows/build.yml` uses ZMK's reusable
 `build-user-config.yml` workflow, driven by `build.yaml`, to build on every
@@ -163,7 +139,7 @@ push/PR. It produces three firmware artifacts:
 Download the `.uf2` files from the Actions run's artifacts once it finishes.
 
 
-## Flashing
+### Flashing
 
 Put each half's controller into bootloader mode (double-tap reset on the
 nice!nano) and copy the matching `.uf2` file (`patkb_left` /
@@ -171,7 +147,7 @@ nice!nano) and copy the matching `.uf2` file (`patkb_left` /
 [flashing docs](https://zmk.dev/docs/development/local-toolchain/build-flash#flashing)
 for details.
 
-## Changing the keymap
+### Changing the keymap
 
 1. Edit `boards/shields/patkb/patkb.keymap`.
 2. Push — CI rebuilds and produces new `.uf2` artifacts, and the layout diagram in the [Layout](#layout) section is
