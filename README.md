@@ -143,3 +143,7 @@ keymap-drawer/               auto-generated layout diagram (patkb.svg) + parsed 
 This shield was originally developed alongside another custom keyboard in a
 combined config repo and was split out here so patkb has its own
 self-contained module and build pipeline.
+
+## License
+
+MIT, see [LICENSE](LICENSE) — the same license as [ZMK](https://github.com/zmkfirmware/zmk) itself.
