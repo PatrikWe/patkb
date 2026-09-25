@@ -1,0 +1,182 @@
+layout: {zmk_keyboard: patkb}
+layers:
+  default:
+  - Q
+  - W
+  - E
+  - R
+  - T
+  - Z
+  - U
+  - I
+  - O
+  - P
+  - {t: A, h: first layer}
+  - {t: S, h: num layer}
+  - {t: D, h: LSHFT}
+  - F
+  - G
+  - H
+  - J
+  - {t: K, h: RSHFT}
+  - {t: L, h: second layer}
+  - {t: Ö, h: first layer}
+  - Y
+  - X
+  - C
+  - V
+  - B
+  - MUTE
+  - PP
+  - N
+  - M
+  - COMMA
+  - DOT
+  - MINUS
+  - ESC
+  - TAB
+  - LGUI
+  - LALT
+  - SPACE
+  - LCTRL
+  - BSPC
+  - RET
+  - second layer
+  - RALT
+  - ß
+  - DEL
+  first layer:
+  - AT
+  - DQT
+  - €
+  - TILDE
+  - SQT
+  - PIPE
+  - Ü
+  - {t: ▽, type: trans}
+  - Ö
+  - {t: ▽, type: trans}
+  - {t: Ä, type: held}
+  - EXCL
+  - HASH
+  - DLLR
+  - PRCNT
+  - SLASH
+  - LPAR
+  - LBKT
+  - LBRC
+  - LT
+  - EQUAL
+  - MINUS
+  - PLUS
+  - STAR
+  - AMPS
+  - GRAVE
+  - {t: ▽, type: trans}
+  - BSLH
+  - RPAR
+  - RBKT
+  - RBRC
+  - GT
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  second layer:
+  - VOL UP
+  - PSCRN
+  - CMENU
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - PG UP
+  - {t: ▽, type: trans}
+  - UP
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - VOL DN
+  - LCTRL
+  - LSHFT
+  - {t: ▽, type: trans}
+  - CLCK
+  - PG DN
+  - LEFT
+  - DOWN
+  - {t: RIGHT, type: held}
+  - DEL
+  - {t: ▽, type: trans}
+  - CUT
+  - COPY
+  - PASTE
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  num layer:
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - PG UP
+  - '7'
+  - '8'
+  - '9'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {type: held}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - PG DN
+  - '4'
+  - '5'
+  - '6'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '1'
+  - '2'
+  - '3'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '0'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}

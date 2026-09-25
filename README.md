@@ -50,6 +50,28 @@ Two custom hold-tap behaviors are defined:
 Both use `flavor = "balanced"` with a 280 ms tapping term and a 150 ms
 require-prior-idle, tuned to avoid misfires while typing fast.
 
+## Layout
+
+![patkb keymap layout](keymap-drawer/patkb.svg)
+
+This diagram is generated automatically from `boards/shields/patkb/patkb.keymap`
+using [`keymap-drawer`](https://github.com/caksoylar/keymap-drawer): every push
+that touches the keymap, the shield's devicetree, or `keymap_drawer.config.yaml`
+triggers `.github/workflows/draw-keymaps.yml`, which re-renders
+`keymap-drawer/patkb.svg` and commits it back — so it never drifts out of sync
+with the actual keymap.
+
+patkb isn't a keyboard `keymap-drawer` knows about, so the physical layout is
+passed explicitly as a `draw_args` CLI flag in the workflow
+(`-n "444442vv 2vv44444"`, ["cols+thumbs" notation](https://github.com/caksoylar/keymap-drawer)):
+5 four-key columns per half, plus one 2-key column bottom-aligned to rows 2-3
+(the `MUTE`/`PLAY` and `CTRL`/`BSPC` keys) — matching the matrix transform in
+`patkb.dtsi`. If the physical key layout ever changes, update that notation
+string in `.github/workflows/draw-keymaps.yml` to match.
+
+German (`DE_*`) key codes and the custom `lt`/`mt` hold-tap behaviors are
+resolved into readable legends via `keymap_drawer.config.yaml`.
+
 ## Building firmware
 
 ### Via GitHub Actions (recommended)
@@ -96,7 +118,8 @@ for details.
 
 1. Edit `boards/shields/patkb/patkb.keymap`.
 2. Push — CI rebuilds and produces new `.uf2` artifacts (or build locally as
-   above).
+   above), and the layout diagram in the [Layout](#layout) section is
+   automatically re-rendered.
 3. Reflash both halves.
 
 Alternatively, since ZMK Studio is enabled on `patkb_left`, simple binding
@@ -106,11 +129,13 @@ connected via USB, without rebuilding/reflashing.
 ## Repo layout
 
 ```
-boards/shields/patkb/   shield definition (devicetree, keymap, Kconfig)
-config/west.yml         west manifest (pins ZMK + Zephyr module versions)
-zephyr/module.yml       marks this repo as a west/Zephyr module (board_root)
-build.yaml              GitHub Actions build matrix (board + shield combos)
-.github/workflows/      CI: builds firmware on every push
+boards/shields/patkb/       shield definition (devicetree, keymap, Kconfig)
+config/west.yml              west manifest (pins ZMK + Zephyr module versions)
+zephyr/module.yml            marks this repo as a west/Zephyr module (board_root)
+build.yaml                   GitHub Actions build matrix (board + shield combos)
+keymap_drawer.config.yaml    keymap-drawer legend/parsing config (German keys, etc)
+keymap-drawer/               auto-generated layout diagram (patkb.svg) + parsed YAML
+.github/workflows/           CI: builds firmware and redraws the layout on every push
 ```
 
 ## Provenance

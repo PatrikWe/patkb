@@ -79,7 +79,7 @@
 &kp C_VOL_UP  &kp PSCRN    &kp K_CMENU  &trans       &trans                        &kp PG_UP &trans    &kp UP   &trans    &trans 
 &kp C_VOL_DN  &kp LCTRL    &kp LSHFT    &trans       &kp CLCK                      &kp PG_DN &kp LEFT  &kp DOWN &kp RIGHT &kp DEL
 &trans        &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans     &trans    &trans   &trans    &trans    &trans   &trans    &trans 
-&trans        &trans       &trans       &trans       &trans     &trans    &trans   &trans    &trans
+&trans        &trans       &trans       &trans       &trans     &trans    &trans   &trans    &trans    &trans    &trans    &trans
             >;
         };
 
