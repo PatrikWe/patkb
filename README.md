@@ -5,13 +5,97 @@ The keyboard is a split keyboard inspired by the [SofleKeyboard](https://github.
 At the time of the build I did not feel comfortable with the idea of designing and ordering a pcb for this keyboard.
 I opted for handwiring the keyboard, but I wanted to keep the option of hotswapping the Kailh Choc V2 Low Profile Switches.
 I ended up 3D-printing a holder plate for the hotswap sockets which I handwired to the [nice!nano v2](https://nicekeyboards.com/nice-nano/).
-The keyboard is programmed with the ZMK firmware and a custom shield.
+The keyboard is programmed with the ZMK firmware including a custom shield for the new layout.
 
-This repo is holding the 3D-files, a list of components and the shield
+This repo is holding the 3D-files, a list of components and a ZMK shield for the layout.
 
 ![patkb keyboard](images/patkb.jpeg)
 
-## What it is
+## The hardware
+
+As mentioned I designed a custom holder plate for the hotswap sockets.
+It is designed to glue in the sockets and then solder them together in the matrix layout.
+The soldering requires a bit of patience as each socket need a diode soldered first and then a wire for each row and column.
+
+Top plate: [Top plate, left half](3d-files/TopPlat_Left.stl)
+
+Case: [Case, left half](3d-files/Case_Left.stl)
+
+
+### Bill of materials
+
+The matrix has 44 keys total (22 per half — see the [Wiring](#wiring) section
+for the exact per-key layout), which drives the quantities below.
+
+| Part | Qty | Notes |
+|---|---:|---|
+| [nice!nano v2](https://nicekeyboards.com/nice-nano/) | 2 | One per half; the left half is flashed as the split central (`patkb_left`), right as peripheral (`patkb_right`) |
+| Kailh Choc V2 low-profile switches | 44 | 22 per half; any force/tactility variant works — [Kailh Choc V2 product page](https://www.kailh.net/products/kailh-choc-v2-low-profile-switch-set) |
+| Kailh Choc hotswap sockets | 44 | 22 per half; the standard "Kailh Choc" PCB/hotswap footprint — Choc V2 switch pins are backward-compatible with it |
+| Small-signal switching diodes (e.g. 1N4148) | 44 | 22 per half, one per switch, through-hole (DO-35), matches `diode-direction = "col2row"` in the shield |
+| Low-profile keycaps for Kailh Choc | 44 | 22 per half |
+| 3.7V LiPo battery, JST-PH 2.0 connector | 1–2 | One per half if run independently, or a single battery + power switch on the central (left) half only — nice!nano v2 has a JST-PH battery connector and built-in charge circuit |
+| SPDT slide switch (power on/off) | 1–2 | Optional, one per battery; matches the small switch visible next to the reset button in the wiring photos |
+| Hookup wire, ~28-30 AWG, 2+ colors | a few meters | Solid-core is easiest to route/hold shape for the row/column matrix bus wires and diode-to-diode jumps; use one color per row and another per column to keep the matrix readable while soldering (as in the [wiring photos](#wiring)) |
+| Rosin-core solder + soldering iron | — | Fine-tip iron recommended for the hotswap sockets and diode legs |
+| Heat-shrink tubing or electrical tape | — | Insulate diode legs / wire crossings inside the case |
+| M2/M3 screws + heat-set inserts (or superglue) | as needed | To close the case halves — depends on how `Case_Left.stl` / `Case_Right.stl` were designed for assembly |
+
+## Wiring
+
+patkb is hand-wired (no PCB): each half is a `col2row` diode matrix soldered
+onto the 3D-printed hotswap-socket plate and wired to a nice!nano v2.
+
+![Hand-wired matrix on the hotswap plate](images/patkb_open_2.jpg)
+![Matrix wiring close-up, controller-side corner](images/patkb_open_3.jpg)
+
+**Diode direction — `col2row`:** every switch has one diode in series, wired
+so current flows from the column wire, through the diode, into the row wire.
+Concretely: the diode's cathode (the banded end) connects to the **row**
+side of the switch, and its anode connects to the **column** wire that daisy
+chains through that column (visible as the red diode-leg jumpers in the
+photos above; the yellow wires are the row wires, one per row, run across
+the columns).
+
+**Physical key → matrix position** (row/col indices as used by
+`RC(row, col)` in `patkb.dtsi`; unlabeled cells don't exist — rows 0/1 only
+populate columns 0-4 and 7-11):
+
+| Row \ Col | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| **0** | Q | W | E | R | T | – | – | Z | U | I | O | P |
+| **1** | A | S | D | F | G | – | – | H | J | K | L | Ö |
+| **2** | Y | X | C | V | B | MUTE | PP | N | M | , | . | - |
+| **3** | ESC | TAB | GUI | ALT | SPC | CTRL | BSPC | RET | L2 | RALT | ß | DEL |
+
+Columns 0-5 are the left half, columns 6-11 the right half (`patkb_right.overlay`
+sets `col-offset = <6>` on the shared transform). Labels are the default
+layer's legends (see [Layout](#layout) for the full keymap with all layers);
+`L2` is the momentary second-layer key and `PP` is play/pause.
+
+**GPIO pin assignments** (from `patkb_left.overlay` / `patkb_right.overlay`;
+pin numbers are ZMK's [pro_micro pinout](https://zmk.dev/docs/development/hardware-integration/pro-micro-shield-connector)
+positions — check that reference against the nice!nano's silkscreen for the
+physical pad):
+
+| Half | Row 0 | Row 1 | Row 2 | Row 3 |
+|---|---|---|---|---|
+| Left (`patkb_left`) | 15 | 14 | 16 | 10 |
+| Right (`patkb_right`) | 6 | 7 | 8 | 9 |
+
+| Half | Col 0/6 | Col 1/7 | Col 2/8 | Col 3/9 | Col 4/10 | Col 5/11 |
+|---|---|---|---|---|---|---|
+| Left (`patkb_left`), global col | 0 → 4 | 1 → 5 | 2 → 6 | 3 → 7 | 4 → 8 | 5 → 9 |
+| Right (`patkb_right`), global col | 6 → 19 | 7 → 18 | 8 → 15 | 9 → 14 | 10 → 16 | 11 → 10 |
+
+(Read the right-half row as "global column → pro_micro pin".)
+
+If you ever rewire or change the matrix, update `patkb_left.overlay` /
+`patkb_right.overlay` and `patkb.dtsi` (row/col count, matrix transform)
+first — the tables above are a snapshot of what's in those files, not the
+source of truth.
+
+## The software
 
 A [ZMK](https://zmk.dev) module for **patkb**, a custom split mechanical keyboard.
 
@@ -20,27 +104,6 @@ Kconfig) and the [`west`](https://docs.zephyrproject.org/latest/develop/west/ind
 manifest needed to build firmware for it — it does not vendor ZMK or Zephyr
 itself, those are pulled in at build time.
 
-## Hardware
-
-- Split keyboard, 4 rows x 12 columns (6 columns per half), wired as a
-  `col2row` GPIO matrix.
-- Controller: [Pro Micro](https://zmk.dev/docs/development/hardware-integration/pro-micro-shield-connector)
-  footprint, target board `nice_nano_v2`.
-- Two shield targets: `patkb_left` and `patkb_right`. The left half is
-  configured as the split central (`ZMK_SPLIT_ROLE_CENTRAL`).
-- [ZMK Studio](https://zmk.studio) is enabled on the left half via the
-  `studio-rpc-usb-uart` snippet, so the keymap's tap/hold layers can be
-  tweaked live without reflashing.
-
-See `boards/shields/patkb/`:
-
-| File | Purpose |
-|---|---|
-| `patkb.dtsi` | Shared devicetree: matrix transform (4x12) and kscan node |
-| `patkb_left.overlay` / `patkb_right.overlay` | Per-half GPIO pin mapping for rows/columns |
-| `patkb.keymap` | The keymap: layers, behaviors, key bindings |
-| `Kconfig.shield` / `Kconfig.defconfig` | Shield Kconfig wiring (board name, split role) |
-| `patkb.zmk.yml` | Shield metadata used by ZMK's shield/module discovery |
 
 ## Keymap
 
@@ -99,25 +162,6 @@ push/PR. It produces three firmware artifacts:
 
 Download the `.uf2` files from the Actions run's artifacts once it finishes.
 
-### Locally (via Docker)
-
-Following ZMK's [local toolchain via Docker](https://zmk.dev/docs/development/local-toolchain/build-with-docker) instructions, from this repo's root:
-
-```sh
-docker run --rm -it -v "$PWD":/workspaces/patkb -w /workspaces/patkb \
-  zmkfirmware/zmk-dev-arm:stable \
-  west init -l config && west update && west zephyr-export
-
-docker run --rm -it -v "$PWD":/workspaces/patkb -w /workspaces/patkb \
-  zmkfirmware/zmk-dev-arm:stable \
-  west build -s zmk/app -b nice_nano_v2 -- \
-    -DSHIELD=patkb_left -DZMK_CONFIG=/workspaces/patkb/config \
-    -DSNIPPET=studio-rpc-usb-uart
-
-# repeat with -DSHIELD=patkb_right (no snippet) for the right half
-```
-
-The resulting UF2 is at `build/zephyr/zmk.uf2`.
 
 ## Flashing
 
@@ -130,33 +174,10 @@ for details.
 ## Changing the keymap
 
 1. Edit `boards/shields/patkb/patkb.keymap`.
-2. Push — CI rebuilds and produces new `.uf2` artifacts (or build locally as
-   above), and the layout diagram in the [Layout](#layout) section is
+2. Push — CI rebuilds and produces new `.uf2` artifacts, and the layout diagram in the [Layout](#layout) section is
    automatically re-rendered.
 3. Reflash both halves.
 
 Alternatively, since ZMK Studio is enabled on `patkb_left`, simple binding
 changes can be made live from the [ZMK Studio](https://zmk.studio) app while
 connected via USB, without rebuilding/reflashing.
-
-## Repo layout
-
-```
-boards/shields/patkb/       shield definition (devicetree, keymap, Kconfig)
-config/west.yml              west manifest (pins ZMK + Zephyr module versions)
-zephyr/module.yml            marks this repo as a west/Zephyr module (board_root)
-build.yaml                   GitHub Actions build matrix (board + shield combos)
-keymap_drawer.config.yaml    keymap-drawer legend/parsing config (German keys, etc)
-keymap-drawer/               auto-generated layout diagram (patkb.svg) + parsed YAML
-.github/workflows/           CI: builds firmware and redraws the layout on every push
-```
-
-## Provenance
-
-This shield was originally developed alongside another custom keyboard in a
-combined config repo and was split out here so patkb has its own
-self-contained module and build pipeline.
-
-## License
-
-MIT, see [LICENSE](LICENSE) — the same license as [ZMK](https://github.com/zmkfirmware/zmk) itself.
